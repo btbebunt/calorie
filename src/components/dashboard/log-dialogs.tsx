@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { getLocalDayQuery } from "@/lib/date-client";
+import { prepareImageForAnalysis } from "@/lib/prepare-image";
 import type { NutritionAnalysis } from "@/types";
 
 interface LogDialogsProps {
@@ -63,17 +64,24 @@ export function LogDialogs({ onSaved }: LogDialogsProps) {
   async function analyzeImage(file: File) {
     setLoading(true);
     try {
+      const prepared = await prepareImageForAnalysis(file);
       const formData = new FormData();
-      formData.append("image", file);
+      formData.append("image", prepared);
       const res = await fetch("/api/analyze/image", {
         method: "POST",
+        credentials: "include",
         body: formData,
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error);
+      if (!res.ok) {
+        throw new Error(data.detail || data.error || "Analysis failed");
+      }
       setAnalysis(data);
-    } catch {
-      toast.error("Could not analyze image. Try again.");
+    } catch (err) {
+      const msg =
+        err instanceof Error ? err.message : "Could not analyze image. Try again.";
+      console.error("Image analyze client error:", err);
+      toast.error(msg);
     } finally {
       setLoading(false);
     }
