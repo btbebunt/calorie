@@ -1,9 +1,10 @@
 import { NextResponse } from "next/server";
+import { getAppTodayDateString } from "@/lib/app-timezone";
 import { getSession } from "@/lib/auth";
 import { deleteLog, getTodayDashboard } from "@/lib/dashboard";
 
 export async function DELETE(
-  request: Request,
+  _request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const session = await getSession();
@@ -14,14 +15,10 @@ export async function DELETE(
   try {
     const { id } = await params;
     await deleteLog(session.userId, id);
-    const { searchParams } = new URL(request.url);
-    const date = searchParams.get("date") ?? undefined;
-    const offset = Number(searchParams.get("offset") ?? 0);
     const summary = await getTodayDashboard(
       session.userId,
       session.dailyCalorieTarget,
-      date ?? undefined,
-      offset
+      getAppTodayDateString()
     );
     return NextResponse.json(summary);
   } catch {

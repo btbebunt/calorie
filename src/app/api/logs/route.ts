@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { getAppTodayDateString } from "@/lib/app-timezone";
 import { getSession } from "@/lib/auth";
 import { getTodayDashboard, insertLog } from "@/lib/dashboard";
 
@@ -9,15 +10,13 @@ export async function GET(request: Request) {
   }
 
   const { searchParams } = new URL(request.url);
-  const date = searchParams.get("date") ?? undefined;
-  const offset = Number(searchParams.get("offset") ?? 0);
+  const date = searchParams.get("date") ?? getAppTodayDateString();
 
   try {
     const summary = await getTodayDashboard(
       session.userId,
       session.dailyCalorieTarget,
-      date ?? undefined,
-      offset
+      date
     );
     return NextResponse.json(summary);
   } catch {
@@ -40,14 +39,10 @@ export async function POST(request: Request) {
       fats: Number(body.fats),
       carbs: Number(body.carbs),
     });
-    const { searchParams } = new URL(request.url);
-    const date = searchParams.get("date") ?? undefined;
-    const offset = Number(searchParams.get("offset") ?? 0);
     const summary = await getTodayDashboard(
       session.userId,
       session.dailyCalorieTarget,
-      date ?? undefined,
-      offset
+      getAppTodayDateString()
     );
     return NextResponse.json({ log, summary });
   } catch {

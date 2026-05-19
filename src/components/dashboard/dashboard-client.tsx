@@ -9,7 +9,6 @@ import { CalorieRing } from "@/components/dashboard/calorie-ring";
 import { LogDialogs } from "@/components/dashboard/log-dialogs";
 import { LogTimeline } from "@/components/dashboard/log-timeline";
 import { MacrosGrid } from "@/components/dashboard/macros-grid";
-import { getLocalDayQuery } from "@/lib/date-client";
 import type { DashboardSummary } from "@/types";
 
 interface DashboardClientProps {
@@ -24,7 +23,7 @@ export function DashboardClient({ username }: DashboardClientProps) {
 
   const load = useCallback(async () => {
     try {
-      const res = await fetch(`/api/logs?${getLocalDayQuery()}`);
+      const res = await fetch("/api/logs");
       if (res.status === 401) {
         router.replace("/login");
         return;
@@ -46,7 +45,7 @@ export function DashboardClient({ username }: DashboardClientProps) {
   async function handleDelete(id: string) {
     setDeletingId(id);
     try {
-      const res = await fetch(`/api/logs/${id}?${getLocalDayQuery()}`, {
+      const res = await fetch(`/api/logs/${id}`, {
         method: "DELETE",
       });
       if (!res.ok) throw new Error();

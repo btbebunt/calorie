@@ -37,6 +37,7 @@ Sessions last 30 days via secure HTTP-only cookie.
 - Log food via camera/image or text (Gemini nutrition analysis)
 - Today's timeline with delete
 - Per-user data isolated by profile
+- Daily totals reset at **00:00 UTC+8** (`Asia/Singapore`), regardless of device timezone
 
 ## Database
 

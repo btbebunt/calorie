@@ -13,7 +13,6 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
-import { getLocalDayQuery } from "@/lib/date-client";
 import { prepareImageForAnalysis } from "@/lib/prepare-image";
 import type { NutritionAnalysis } from "@/types";
 
@@ -100,7 +99,7 @@ export function LogDialogs({ onSaved }: LogDialogsProps) {
     if (!analysis) return;
     setSaving(true);
     try {
-      const res = await fetch(`/api/logs?${getLocalDayQuery()}`, {
+      const res = await fetch("/api/logs", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(analysis),

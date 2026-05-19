@@ -1,30 +1,14 @@
+import { getAppDayBounds, getAppTodayDateString } from "@/lib/app-timezone";
 import { supabase } from "@/lib/supabase";
 import type { DailyLog, DashboardSummary } from "@/types";
-
-function dayBounds(
-  localDate: string,
-  tzOffsetMinutes = 0
-): { start: string; end: string } {
-  const [year, month, day] = localDate.split("-").map(Number);
-  const startMs =
-    Date.UTC(year, month - 1, day, 0, 0, 0, 0) + tzOffsetMinutes * 60 * 1000;
-  const endMs =
-    Date.UTC(year, month - 1, day, 23, 59, 59, 999) + tzOffsetMinutes * 60 * 1000;
-  return {
-    start: new Date(startMs).toISOString(),
-    end: new Date(endMs).toISOString(),
-  };
-}
 
 export async function getTodayDashboard(
   userId: string,
   target: number,
-  localDate?: string,
-  tzOffsetMinutes = 0
+  localDate?: string
 ): Promise<DashboardSummary> {
-  const date =
-    localDate ?? new Date().toLocaleDateString("en-CA", { timeZone: "UTC" });
-  const { start, end } = dayBounds(date, tzOffsetMinutes);
+  const date = localDate ?? getAppTodayDateString();
+  const { start, end } = getAppDayBounds(date);
 
   const { data: logs, error } = await supabase
     .from("daily_logs")
