@@ -13,24 +13,27 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  title: "Calorie Tracker",
-  description: "Private calorie and macro tracker",
-  appleWebApp: {
-    capable: true,
-    statusBarStyle: "default",
-    title: "Calories",
-  },
-};
-
 export const viewport: Viewport = {
+  themeColor: "#ecfdf5",
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#ecfdf5" },
-    { media: "(prefers-color-scheme: dark)", color: "#0a0a0a" },
-  ],
+  userScalable: false,
+  viewportFit: "cover",
+};
+
+export const metadata: Metadata = {
+  title: "Calorie Tracker",
+  description: "Private Calorie Tracker for Family",
+  applicationName: "Calorie Tracker",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "Calorie Tracker",
+  },
+  formatDetection: {
+    telephone: false,
+  },
 };
 
 export default function RootLayout({
@@ -43,7 +46,7 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">
+      <body className="min-h-dvh flex flex-col supports-[padding:max(0px)]:pb-[env(safe-area-inset-bottom)]">
         {children}
         <Toaster richColors position="top-center" />
       </body>
